@@ -14,7 +14,6 @@ import scipy.stats # For sampling and evaluating probability distributions
 from matplotlib.gridspec import GridSpec # For plotting
 import sys
 import itertools
-import mplcursors  # Enables hover labels
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
