@@ -611,8 +611,10 @@ st.title("CO2 plume and pressure front")
 if st.button("▶ Run Simulation"):
     st.session_state["rerun_key"] = st.session_state.get("rerun_key", 0) + 1
 
-valueLCC_input = st.slider("Select a value for LCC", min_value=0.2, max_value=1.0, value=0.7)
-valuek_input = st.slider("Select a value for Permeability (mD)", min_value=1, max_value=200, value=27)
+valueLCC_input = st.slider("Uncertainty parameter: Select a value for LCC", min_value=0.2, max_value=1.0, value=0.7)
+valuek_input = st.slider("Uncertainty parameter: Select a value for Permeability (mD)", min_value=1, max_value=200, value=27)
+
+valuePwf_input = st.slider("Design parameter: Select topside injection pressure (bar)", min_value=10, max_value=60, value=200)
 
 
 # Show video if triggered
@@ -632,7 +634,7 @@ if "rerun_key" in st.session_state:
         Pressure_gradient=mu_x_in[6],
         geomecGradient_shallow=mu_x_in[7],
         geomecGradient_deeper=mu_x_in[8],
-        Pwf=Pwf,
+        Pwf=valuePwf_input*1e5,
         well_count=well_count,
         injection_base=injection_base,
         injection_interval=injection_interval,
