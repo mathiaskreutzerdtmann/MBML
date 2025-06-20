@@ -10,23 +10,11 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import cumulative_trapezoid
-import scipy.stats # For sampling and evaluating probability distributions
-from matplotlib.gridspec import GridSpec # For plotting
 import sys
-import itertools
-import matplotlib
-import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import matplotlib.image as mpimg
-from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import matplotlib.animation as animation
-import io
 import tempfile
-from matplotlib.animation import PillowWriter
 from matplotlib.animation import FFMpegWriter
-from io import BytesIO
-import base64
-import uuid  # for unique ID
 
 year_in_seconds = 31.536e6 #31.536e6s is one year
 mD_to_m2 = 9.869233e-16 #1mD = 9.869233e-16m2
