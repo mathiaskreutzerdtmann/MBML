@@ -127,14 +127,14 @@ def draw_analitic(seaLevel,lastBarrierDepth,injectionBase,plumeSize_h,plumeSize_
     ax.set_frame_on(False)
     
 # generate animation
-def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i):
+def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i,m_i):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+    ax3 = ax2.twinx()
 
     def update(i):
         ax1.clear()
         ax2.clear()
         ax3.clear()
-
 
         draw_analitic(
             SeaWaterLevel,
@@ -153,18 +153,17 @@ def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_
 
         ax2.plot(t[:i+1]/year_in_seconds, dotm_i[:i+1]*year_in_seconds/1e9, color='tab:red', label='Injection rate [million t/y]')
         ax2.set_xlim([0, max(t)/year_in_seconds])
-        ax2.set_ylim([0, max(dotm_i*year_in_seconds/1e9)*1.02])
+        ax2.set_ylim([0, max(dotm_i*year_in_seconds/1e9)*1.1])
         ax2.set_xlabel("Time [y]")
         ax2.set_ylabel("Injection rate")
-        ax2.legend()
+        ax2.legend(loc='upper left')
         ax2.grid(True)
         
         # Second y-axis: another variable
-        ax3 = ax2.twinx()
-        ax3.plot(t[:i+1]/year_in_seconds, m_i[:i+1]*year_in_seconds/1e9, color='tab:blue', label='Injected mass [million tons]')
-        ax3.set_ylim([0, max(m_i*year_in_seconds/1e9)*1.02])
+        ax3.plot(t[:i+1]/year_in_seconds, m_i[:i+1]/1e9, color='tab:blue', label='Injected mass [million tons]')
+        ax3.set_ylim([0, max(m_i/1e9)*1.1])
         ax3.set_ylabel("Injected mass")
-        ax3.legend()
+        ax3.legend(loc='upper right')
         
         plt.tight_layout()
         return fig,
@@ -543,7 +542,7 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
 
 
     
-    return CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i,(capacity_restrictions)#capacity_restrictions
+    return CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i,m_i,(capacity_restrictions)#capacity_restrictions
 
 plt.close('all') 
 
@@ -614,7 +613,7 @@ valueMaxRate_input = st.slider("Design parameter: Select Maximum rate on cluster
 if "rerun_key" in st.session_state:
     
     key = st.session_state["rerun_key"]
-    CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i,BaseCase = proxy_model_CCS(
+    CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i,m_i,BaseCase = proxy_model_CCS(
         Datum=Datum,
         bottom_last_formation_barrier=bottom_last_formation_barrier,
         SeaWaterLevel=SeaWaterLevel,
@@ -639,7 +638,7 @@ if "rerun_key" in st.session_state:
         squaredArea=squaredArea)
     
     print(f"Capacity: {BaseCase/1e9:.2f}")
-    video_file  = generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i)
+    video_file  = generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i,m_i)
    
     st.video(f"{video_file}")    
     
