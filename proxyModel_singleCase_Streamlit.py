@@ -32,28 +32,12 @@ year_in_seconds = 31.536e6 #31.536e6s is one year
 mD_to_m2 = 9.869233e-16 #1mD = 9.869233e-16m2
 
 
-    
-def latin_hypercube_sampling(N, dim):
-    """Generate Latin Hypercube samples with independent shuffling for each dimension."""
-    samples = np.zeros((N, dim))
-    for i in range(dim):
-        perm = np.random.permutation(N)
-        samples[:, i] = (perm + np.random.rand(N)) / N
-    return samples
-
 def progress_bar(iteration, total, length=40):
     percent = (iteration / total) * 100
     bar = "#" * int(length * iteration / total) + "-" * (length - int(length * iteration / total))
     sys.stdout.write(f"\r[{bar}] {percent:.2f}%")
     sys.stdout.flush()
     
-    
-class sim_Case:
-    def __init__(self):
-        self.D_in=None
-        self.X_in=None
-        self.X_out=None
-
 def draw_analitic(seaLevel,lastBarrierDepth,injectionBase,plumeSize_h,plumeSize_v,pressureFront_h,pressureFront_v,presSeal,sealLimit,presInj,injLimit,ax):
 
     ax.cla()
@@ -142,7 +126,7 @@ def draw_analitic(seaLevel,lastBarrierDepth,injectionBase,plumeSize_h,plumeSize_
     ax.set_yticks([])
     ax.set_frame_on(False)
     
-# Função que gera a animação e retorna como GIF
+# generate animation
 def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
 
@@ -172,7 +156,14 @@ def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_
         ax2.set_ylabel("Injection rate")
         ax2.legend()
         ax2.grid(True)
-
+        
+        # Second y-axis: another variable
+        ax3 = ax2.twinx()
+        ax3.plot(t[:i+1]/year_in_seconds, m_i[:i+1]*year_in_seconds/1e9, color='tab:blue', label='Injected mass [million tons]')
+        ax3.set_ylim([0, max(m_i*year_in_seconds/1e9)*1.02])
+        ax3.set_ylabel("Injected mass")
+        ax3.legend()
+        
         plt.tight_layout()
         return fig,
 
