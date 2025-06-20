@@ -634,7 +634,7 @@ if "rerun_key" in st.session_state:
         Pressure_gradient=mu_x_in[6],
         geomecGradient_shallow=mu_x_in[7],
         geomecGradient_deeper=mu_x_in[8],
-        Pwf=valuePwf_input*1e5,
+        Pwf=(150+valuePwf_input)*1e5,
         well_count=well_count,
         injection_base=injection_base,
         injection_interval=injection_interval,
