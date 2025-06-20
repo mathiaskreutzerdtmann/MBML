@@ -615,6 +615,7 @@ valueLCC_input = st.slider("Uncertainty parameter: Select a value for LCC", min_
 valuek_input = st.slider("Uncertainty parameter: Select a value for Permeability (mD)", min_value=1, max_value=200, value=27)
 
 valuePwf_input = st.slider("Design parameter: Select topside injection pressure (bar)", min_value=10, max_value=200, value=60)
+valueMaxRate_input = st.slider("Design parameter: Select Maximum rate on cluster (Miton/year)", min_value=3, max_value=50, value=20)
 
 
 # Show video if triggered
@@ -638,7 +639,7 @@ if "rerun_key" in st.session_state:
         well_count=well_count,
         injection_base=injection_base,
         injection_interval=injection_interval,
-        maximumRate=maximumRate,
+        maximumRate=valueMaxRate_input*1e9/year_in_seconds,
         maximumAllowedPlumeReach=maximumAllowedPlumeReach,
         minimumAllowedLevel=minimumAllowedLevel,
         percentage_geomecLimits_shallow=safetyPercentage_geomecLimits_shallow,
