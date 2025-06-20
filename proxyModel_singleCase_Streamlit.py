@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-  
+# -*- coding: utf-8 -*-
 """
 Created on Mon Feb 17 12:39:27 2025
 
@@ -521,7 +521,10 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
     
     
     capacity_restrictions = np.min([capacity_restricted_geomec_coreAreaPressure,capacity_restricted_geomec_lastFormationBarrierPressure])
-    
+  
+    print(capacity_restricted_geomec_coreAreaPressure)
+    print(capacity_restricted_geomec_lastFormationBarrierPressure)
+  
  #   print(f"RESULT: Capacity considering geomec restrictions, in Miton = {capacity_restrictions/1e9:.2f} (vs. {m_i[-1]/1e9:.2f} unrestricted)")
 
     capacity_restrictions = capacity_restrictions+1####adding something to avoid log problems
@@ -605,7 +608,7 @@ if "running" not in st.session_state:
 # Sliders with keys
 st.slider("Uncertainty parameter: Select a value for LCC", 0.2, 1.0, 0.7, key="valueLCC_input")
 st.slider("Uncertainty parameter: Select a value for Permeability (mD)", 1, 200, 27, key="valuek_input")
-st.slider("Design parameter: Select topside injection pressure (bar)", 10, 200, 60, key="valuePwf_input")
+st.slider("Design parameter: Select topside injection pressure (bar)", 10, 200, 75, key="valuePwf_input")
 st.slider("Design parameter: Select Maximum rate on cluster (Million t/year)", 3, 50, 20, key="valueMaxRate_input")
 
 # Button to trigger simulation
@@ -630,46 +633,49 @@ if current_inputs != st.session_state["prev_inputs"]:
 # Run simulation only when triggered
 if st.session_state["run_simulation"]:
     time.sleep(.2)
+
+    with st.spinner("Generating animation, please wait..."):    
+        CO2_equivalentRadius, CO2_plumeHeight, H_spread_pressure, V_spread_pressure, \
+        pressure_on_bottom_last_formation_barrier, geomecGradient_shallow, \
+        percentage_geomecLimits_shallow, overpressure_coreArea_percent, \
+        percentage_geomecLimits_deeper, t, dotm_i, m_i, BaseCase = proxy_model_CCS(
+            Datum=Datum,
+            bottom_last_formation_barrier=bottom_last_formation_barrier,
+            SeaWaterLevel=SeaWaterLevel,
+            phi=mu_x_in[0],
+            k=st.session_state["valuek_input"] * mD_to_m2,
+            kvkh_ratio=mu_x_in[2],
+            LCC=st.session_state["valueLCC_input"],
+            C_Land=np.exp(mu_x_in[4]),
+            Solubility=mu_x_in[5],
+            Pressure_gradient=mu_x_in[6],
+            geomecGradient_shallow=mu_x_in[7],
+            geomecGradient_deeper=mu_x_in[8],
+            Pwf=(150 + st.session_state["valuePwf_input"]) * 1e5,
+            well_count=well_count,
+            injection_base=injection_base,
+            injection_interval=injection_interval,
+            maximumRate=st.session_state["valueMaxRate_input"] * 1e9 / year_in_seconds,
+            maximumAllowedPlumeReach=maximumAllowedPlumeReach,
+            minimumAllowedLevel=minimumAllowedLevel,
+            percentage_geomecLimits_shallow=safetyPercentage_geomecLimits_shallow,
+            percentage_geomecLimits_deeper=safetyPercentage_geomecLimits_deeper,
+            squaredArea=squaredArea,
+        )
     
-    CO2_equivalentRadius, CO2_plumeHeight, H_spread_pressure, V_spread_pressure, \
-    pressure_on_bottom_last_formation_barrier, geomecGradient_shallow, \
-    percentage_geomecLimits_shallow, overpressure_coreArea_percent, \
-    percentage_geomecLimits_deeper, t, dotm_i, m_i, BaseCase = proxy_model_CCS(
-        Datum=Datum,
-        bottom_last_formation_barrier=bottom_last_formation_barrier,
-        SeaWaterLevel=SeaWaterLevel,
-        phi=mu_x_in[0],
-        k=st.session_state["valuek_input"] * mD_to_m2,
-        kvkh_ratio=mu_x_in[2],
-        LCC=st.session_state["valueLCC_input"],
-        C_Land=np.exp(mu_x_in[4]),
-        Solubility=mu_x_in[5],
-        Pressure_gradient=mu_x_in[6],
-        geomecGradient_shallow=mu_x_in[7],
-        geomecGradient_deeper=mu_x_in[8],
-        Pwf=(150 + st.session_state["valuePwf_input"]) * 1e5,
-        well_count=well_count,
-        injection_base=injection_base,
-        injection_interval=injection_interval,
-        maximumRate=st.session_state["valueMaxRate_input"] * 1e9 / year_in_seconds,
-        maximumAllowedPlumeReach=maximumAllowedPlumeReach,
-        minimumAllowedLevel=minimumAllowedLevel,
-        percentage_geomecLimits_shallow=safetyPercentage_geomecLimits_shallow,
-        percentage_geomecLimits_deeper=safetyPercentage_geomecLimits_deeper,
-        squaredArea=squaredArea,
-    )
-
-    if (BaseCase < m_i[-1]):
-        st.write(f"Capacity: {BaseCase/1e9:.2f} Million tons (constrained by geomechanics)")
-    else: 
-        st.write(f"Capacity under restrictions: {BaseCase/1e9:.2f} Million tons (no limit reached)")
-    video_file = generate_simulation_animation(
-        CO2_equivalentRadius, CO2_plumeHeight, H_spread_pressure, V_spread_pressure,
-        pressure_on_bottom_last_formation_barrier, geomecGradient_shallow,
-        percentage_geomecLimits_shallow, overpressure_coreArea_percent,
-        percentage_geomecLimits_deeper, t, dotm_i, m_i,BaseCase
-    )
-
-    st.video(f"{video_file}")
- 
-    st.session_state["running"] = False
+        if (BaseCase < m_i[-1]):
+            st.write(f"Capacity: {BaseCase/1e9:.2f} Million tons (constrained by geomechanics)")
+        else: 
+            st.write(f"Capacity under restrictions: {BaseCase/1e9:.2f} Million tons (no limit reached)")
+        video_file = generate_simulation_animation(
+            CO2_equivalentRadius, CO2_plumeHeight, H_spread_pressure, V_spread_pressure,
+            pressure_on_bottom_last_formation_barrier, geomecGradient_shallow,
+            percentage_geomecLimits_shallow, overpressure_coreArea_percent,
+            percentage_geomecLimits_deeper, t, dotm_i, m_i,BaseCase
+        )
+    
+    ################ainda com um problema no limite geomecanico do intervalo raso. na figura ele pinta de vermelho corretamente, mas no calculo do volume maximo esta com problema.....
+    
+        st.video(f"{video_file}")
+     
+        st.session_state["running"] = False
