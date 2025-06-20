@@ -213,9 +213,6 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
     ##pre adjust 0.6
     pressureFront_vh_ratio = kvkh_ratio*(K_LCC*(LCC/0.7)**2.0) #####Verify
     
-    ##pre adjust 1.0
-#    plume_vh_ratio = pressureFront_vh_ratio*1.0 #####Verify
- 
     ##pre adjust 9.0
     plumeVolume_to_pressureFrontVolume_ratio = 9.0 #####Verify
     
@@ -542,6 +539,7 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
 
     capacity_restrictions = capacity_restrictions+1####adding something to avoid log problems
 
+    #### plume geometry code
     plume_vh_ratio = pressureFront_vh_ratio
     CO2_plumeArea = (np.clip(CO2_plume_bulkrockvolume,0,1000e9)*(np.pi)**0.5*plume_vh_ratio)**(2/3)
     CO2_equivalentRadius = (CO2_plumeArea/np.pi)**0.5
@@ -568,22 +566,22 @@ SeaWaterLevel = 400 ##m
 
 ############ Natural inputs with uncertainty
 
-phi = 0.20 
-k = 40*mD_to_m2  # keffective (krel*kabs) log-normal
+phi = 0.16 
+k = 27*mD_to_m2  # keffective (krel*kabs) log-normal
 kvkh_ratio = 10
 LCC = 0.7
 C_Land = 1 #log-normal
 Solubility = 0.015 ##average Rs of CO2 in brine
-Pressure_gradient = 0.1e5 ## Pa/m
-geomecGradient_shallow = 0.14e5
-geomecGradient_deeper = 0.13e5
+Pressure_gradient = 0.102e5 ## Pa/m
+geomecGradient_shallow = 0.154e5
+geomecGradient_deeper = 0.139e5
 
 ############ Designed (controllable) inputs
 
 Pwf = 210*1e5 ## 210 bar in Pa at datum -1500m
 #print("Injection pressure in Pa, Pwf = " + str(Pwf) )
-well_count = 10
-injection_base = 1950 
+well_count = 12
+injection_base = 1900 
 injection_interval = 200
 maximumRate = 30*1e9/year_in_seconds # maximumRate of 30 miton/year, effective as a restriction for too big injectivities
 
@@ -592,7 +590,7 @@ maximumAllowedPlumeReach = 10000 #plume allowed to migrate within 10km mean radi
 minimumAllowedLevel = bottom_last_formation_barrier + 200 #safety margin of 200m from bottom of last formation barrier
 
 safetyPercentage_geomecLimits_shallow = 0.8
-safetyPercentage_geomecLimits_deeper = 0.95
+safetyPercentage_geomecLimits_deeper = 0.9
 
 squaredArea = 12e3*9e3 #12kmx9km injection acreage
 
@@ -601,13 +599,10 @@ designTargetReached = 0
 
 
 ## model run
-
-# Define the mean for the prior of the input variables
+#defining the input
 mu_x_in = [phi,np.log(k),kvkh_ratio,LCC,np.log(C_Land),Solubility,Pressure_gradient,geomecGradient_shallow,geomecGradient_deeper]
 
 #def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh_ratio,LCC,C_Land,Solubility,Pressure_gradient,geomecGradient_shallow,geomecGradient_deeper,Pwf,well_count,injection_base,injection_interval,maximumRate,maximumAllowedPlumeReach,minimumAllowedLevel,percentage_geomecLimits_shallow,percentage_geomecLimits_deeper,squaredArea):
-
-
 
 # Streamlit
 st.title("CO2 plume and pressure front")
@@ -617,19 +612,19 @@ if st.button("▶ Run Simulation"):
     st.session_state["rerun_key"] = st.session_state.get("rerun_key", 0) + 1
 
 valueLCC_input = st.slider("Select a value for LCC", min_value=0.2, max_value=1.0, value=0.7)
+valuek_input = st.slider("Select a value for Permeability (mD)", min_value=1, max_value=200, value=27)
 
-# Show GIF if triggered
+
+# Show video if triggered
 if "rerun_key" in st.session_state:
     
-    
-    print(" EEEEEEEEEEEEEEEEEEeeeee ")
     key = st.session_state["rerun_key"]
     CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i,BaseCase = proxy_model_CCS(
         Datum=Datum,
         bottom_last_formation_barrier=bottom_last_formation_barrier,
         SeaWaterLevel=SeaWaterLevel,
         phi=mu_x_in[0],
-        k=np.exp(mu_x_in[1]),
+        k=valuek_input*mD_to_m2,
         kvkh_ratio=mu_x_in[2],
         LCC=valueLCC_input,
         C_Land=np.exp(mu_x_in[4]),
@@ -653,20 +648,3 @@ if "rerun_key" in st.session_state:
    
     st.video(f"{video_file}")    
     
-   # print(uuid.uuid4().hex)
-    ## Generate a unique cache-busting token
-   # unique_token = uuid.uuid4().hex
-    
-    ## Embed the base64-encoded video in an HTML <video> tag with unique query string
-   # video_data_uri = f"data:video/mp4;base64,{video_base64}#{unique_token}"
-
-    ## HTML to embed the video, with autoplay
-   # html_code = f"""
-   # <video width="700" height="400" controls autoplay>
-   #     <source src="{video_data_uri}" type="video/mp4">
-   #     Your browser does not support the video tag.
-   # </video>
-   # """
-    
-    ## Display the video using Streamlit markdown
-   # st.markdown(html_code, unsafe_allow_html=True)
