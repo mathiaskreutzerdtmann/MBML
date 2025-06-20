@@ -614,7 +614,7 @@ if st.button("▶ Run Simulation"):
 valueLCC_input = st.slider("Uncertainty parameter: Select a value for LCC", min_value=0.2, max_value=1.0, value=0.7)
 valuek_input = st.slider("Uncertainty parameter: Select a value for Permeability (mD)", min_value=1, max_value=200, value=27)
 
-valuePwf_input = st.slider("Design parameter: Select topside injection pressure (bar)", min_value=10, max_value=60, value=200)
+valuePwf_input = st.slider("Design parameter: Select topside injection pressure (bar)", min_value=10, max_value=200, value=60)
 
 
 # Show video if triggered
