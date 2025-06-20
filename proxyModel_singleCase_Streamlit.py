@@ -133,6 +133,8 @@ def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_
     def update(i):
         ax1.clear()
         ax2.clear()
+        ax3.clear()
+
 
         draw_analitic(
             SeaWaterLevel,
@@ -176,8 +178,7 @@ def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_
     )
 
     with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmpfile:
-        print(tmpfile.name)
-        
+ 
         writer = FFMpegWriter(fps=10, bitrate=1800)
         ani.save(tmpfile.name, writer=writer)
         tmpfile.seek(0)
