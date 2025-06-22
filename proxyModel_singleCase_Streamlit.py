@@ -507,12 +507,8 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
     
 #    print(f"RESULT: Capacity restricted to geomecanical limits on central area in Miton = {capacity_restricted_geomec_coreAreaPressure/1e9:.2f}")
     
-    maxPercentage = (geomecGradient_shallow*percentage_geomecLimits_shallow - Pressure_gradient)/Pressure_gradient
-
-
     presSeal = pressure_on_bottom_last_formation_barrier + bottom_last_formation_barrier * Pressure_gradient
     presLimit =  (geomecGradient_shallow * percentage_geomecLimits_shallow) * bottom_last_formation_barrier
-
 
     effectiveSafetyMargin_lastFormation = presLimit-presSeal
     
