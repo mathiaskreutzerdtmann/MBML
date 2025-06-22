@@ -125,6 +125,8 @@ def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_
         ax2.clear()
         ax3.clear()
 
+
+
         draw_analitic(
             SeaWaterLevel,
             bottom_last_formation_barrier,
@@ -507,7 +509,12 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
     
     maxPercentage = (geomecGradient_shallow*percentage_geomecLimits_shallow - Pressure_gradient)/Pressure_gradient
 
-    effectiveSafetyMargin_lastFormation = (maxPercentage - (pressure_on_bottom_last_formation_barrier_percent/(Pressure_gradient*bottom_last_formation_barrier)-1))/maxPercentage
+
+    presSeal = pressure_on_bottom_last_formation_barrier + bottom_last_formation_barrier * Pressure_gradient
+    presLimit =  (geomecGradient_shallow * percentage_geomecLimits_shallow) * bottom_last_formation_barrier
+
+
+    effectiveSafetyMargin_lastFormation = presLimit-presSeal
     
     if(effectiveSafetyMargin_lastFormation[-1]>0):
         index_2 = len(m_i)
