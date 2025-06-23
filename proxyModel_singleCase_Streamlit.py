@@ -5,7 +5,7 @@ Created on Mon Feb 17 12:39:27 2025
 @author: mkreutzerdtman
 """
 import streamlit as st
- 
+
 from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
@@ -30,7 +30,7 @@ def progress_bar(iteration, total, length=40):
 def draw_analitic(seaLevel,lastBarrierDepth,injectionBase,plumeSize_h,plumeSize_v,pressureFront_h,pressureFront_v,presSeal,sealLimit,presInj,injLimit,ax):
 
     ax.cla()
-    scale = 4e-5
+    scale = 6e-5
     verticalExagg = 5
 
     # Add a rectangle
@@ -54,11 +54,11 @@ def draw_analitic(seaLevel,lastBarrierDepth,injectionBase,plumeSize_h,plumeSize_
     
     ellipse = patches.Rectangle(
     (0.5-pressureFront_h*scale/2,  1.0-injectionBase*scale*verticalExagg-pressureFront_v*scale*verticalExagg/2-plumeSize_v*scale*verticalExagg/2), pressureFront_h*scale, pressureFront_v*scale*verticalExagg,
-    edgecolor='red', facecolor='pink', linewidth=1, alpha=0.1
+    edgecolor='darkgreen', facecolor='green', linewidth=1, alpha=0.01
 )
     ellipse2 = patches.Rectangle(
     (0.5-plumeSize_h*scale/2, 1.0-injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg), plumeSize_h*scale, plumeSize_v*scale*verticalExagg, 
-    edgecolor='darkgreen', facecolor='green', linewidth=1, alpha=0.1
+    edgecolor='red', facecolor='pink', linewidth=1, alpha=0.01
 )
 
     img_pil = Image.open("pressureFront.png")
@@ -99,11 +99,16 @@ def draw_analitic(seaLevel,lastBarrierDepth,injectionBase,plumeSize_h,plumeSize_
 
     ax.add_patch(ellipse)
     ax.add_patch(ellipse2)
-    if(presSeal>sealLimit):
+    
+    if(presSeal>sealLimit+100e5):
+        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, "Pressure just below seal way beyond geomec. limit", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))    
+    elif(presSeal>sealLimit):
         ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, f"Pressure just below seal [geomec. limit] in bars: {presSeal/1e5:.1f} [{sealLimit/1e5:.1f}]", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
     else:
         ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, f"Pressure just below seal [geomec. limit] in bars: {presSeal/1e5:.1f} [{sealLimit/1e5:.1f}]", fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
-    if(presInj>injLimit):
+    if(presInj>injLimit+100e5):
+        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, "Pressure on injection region way beyond geomec. limit", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
+    elif(presInj>injLimit):
         ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, f"Pressure on injection region [geomec. limit] in bars: {presInj/1e5:.1f} [{injLimit/1e5:.1f}]", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
     else:
         ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, f"Pressure on injection region [geomec. limit] in bars: {presInj/1e5:.1f} [{injLimit/1e5:.1f}]", fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
@@ -116,7 +121,7 @@ def draw_analitic(seaLevel,lastBarrierDepth,injectionBase,plumeSize_h,plumeSize_
     ax.set_frame_on(False)
     
 # generate animation
-def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i,m_i,capacity_constrained):
+def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_pressure,V_spread_pressure,pressure_on_bottom_last_formation_barrier,geomecGradient_shallow,geomecGradient_deeper,percentage_geomecLimits_shallow,overpressure_coreArea_percent,percentage_geomecLimits_deeper,t,dotm_i,m_i,capacity_constrained):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
     ax3 = ax2.twinx()
 
@@ -124,8 +129,6 @@ def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_
         ax1.clear()
         ax2.clear()
         ax3.clear()
-
-
 
         draw_analitic(
             SeaWaterLevel,
@@ -479,7 +482,6 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
         i=i+1
     
     overpressure_coreArea_percent = (Pe-Pe0)/(injection_base*Pressure_gradient)
-    pressure_on_bottom_last_formation_barrier_percent = pressure_on_bottom_last_formation_barrier/(bottom_last_formation_barrier*Pressure_gradient)
     
 #    print(f"RESULT: Pressure front area, in km2 = {H_spread_pressure[-1]**2/1e6*np.pi:.2f}")
 #    print(f"RESULT: Pressure front height, in m  = {V_spread_pressure[-1]:.2f}")
@@ -494,9 +496,13 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
 
     
     ## results restricted to geomec 
-    
-    maxPercentage = (geomecGradient_deeper*percentage_geomecLimits_deeper - Pressure_gradient)/Pressure_gradient
-    effectiveSafetyMargin_coreArea = (maxPercentage - overpressure_coreArea_percent)/maxPercentage
+
+
+    presInj = (1 + overpressure_coreArea_percent) * (injection_base * Pressure_gradient)
+    presInjLimit  = (geomecGradient_deeper * percentage_geomecLimits_deeper) * injection_base
+    print(geomecGradient_deeper)
+
+    effectiveSafetyMargin_coreArea = presInjLimit - presInj
     
     if(effectiveSafetyMargin_coreArea[-1]>0):
         index_1 = len(m_i)
@@ -507,8 +513,10 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
     
 #    print(f"RESULT: Capacity restricted to geomecanical limits on central area in Miton = {capacity_restricted_geomec_coreAreaPressure/1e9:.2f}")
     
+
     presSeal = pressure_on_bottom_last_formation_barrier + bottom_last_formation_barrier * Pressure_gradient
     presLimit =  (geomecGradient_shallow * percentage_geomecLimits_shallow) * bottom_last_formation_barrier
+    
 
     effectiveSafetyMargin_lastFormation = presLimit-presSeal
     
@@ -525,8 +533,6 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
     
     capacity_restrictions = np.min([capacity_restricted_geomec_coreAreaPressure,capacity_restricted_geomec_lastFormationBarrierPressure])
   
-    print(capacity_restricted_geomec_coreAreaPressure)
-    print(capacity_restricted_geomec_lastFormationBarrierPressure)
   
  #   print(f"RESULT: Capacity considering geomec restrictions, in Miton = {capacity_restrictions/1e9:.2f} (vs. {m_i[-1]/1e9:.2f} unrestricted)")
 
@@ -609,10 +615,13 @@ if "running" not in st.session_state:
 
 
 # Sliders with keys
-st.slider("Uncertainty parameter: Select a value for LCC", 0.2, 1.0, 0.7, key="valueLCC_input")
-st.slider("Uncertainty parameter: Select a value for Permeability (mD)", 1, 200, 27, key="valuek_input")
-st.slider("Design parameter: Select topside injection pressure (bar)", 10, 200, 75, key="valuePwf_input")
-st.slider("Design parameter: Select Maximum rate on cluster (Million t/year)", 3, 50, 20, key="valueMaxRate_input")
+st.slider("Natural uncertainty parameter: Heterogeneity (LCC)", 0.2, 1.0, 0.7, key="valueLCC_input")
+st.slider("Natural uncertainty parameter: Permeability (mD)", 1, 200, 27, key="valuek_input")
+st.slider("Natural uncertainty parameter: Minimum Stress Gradient on shallow formation (bar/m)", 0.13, 0.17, 0.15, key="stress_input")
+st.slider("Design parameter: topside injection pressure (bar)", 10, 200, 75, key="valuePwf_input")
+st.slider("Design parameter: Maximum rate on cluster (Million t/year)", 3, 50, 20, key="valueMaxRate_input")
+st.slider("Design parameter: Number of wells", 2, 24, 12, key="numberWells_input")
+st.slider("Design parameter: Distance between wells (km)", 1.0, 10.0, 3.0, key="wellSpacing_input",step=0.1)
 
 # Button to trigger simulation
 clicked = st.button("▶ Run Simulation", disabled=st.session_state["running"])
@@ -625,8 +634,11 @@ if clicked:
 current_inputs = {
     "LCC": st.session_state["valueLCC_input"],
     "k": st.session_state["valuek_input"],
+    "stress": st.session_state["stress_input"],
     "Pwf": st.session_state["valuePwf_input"],
-    "MaxRate": st.session_state["valueMaxRate_input"]
+    "MaxRate": st.session_state["valueMaxRate_input"],
+    "numberWells": st.session_state["numberWells_input"],
+    "wellSpacing": st.session_state["wellSpacing_input"]
 }
 
 if current_inputs != st.session_state["prev_inputs"]:
@@ -652,10 +664,10 @@ if st.session_state["run_simulation"]:
             C_Land=np.exp(mu_x_in[4]),
             Solubility=mu_x_in[5],
             Pressure_gradient=mu_x_in[6],
-            geomecGradient_shallow=mu_x_in[7],
-            geomecGradient_deeper=mu_x_in[8],
+            geomecGradient_shallow=st.session_state["stress_input"]*1e5,
+            geomecGradient_deeper=st.session_state["stress_input"]*1e5/0.154*0.139,
             Pwf=(150 + st.session_state["valuePwf_input"]) * 1e5,
-            well_count=well_count,
+            well_count=st.session_state["numberWells_input"],
             injection_base=injection_base,
             injection_interval=injection_interval,
             maximumRate=st.session_state["valueMaxRate_input"] * 1e9 / year_in_seconds,
@@ -663,21 +675,25 @@ if st.session_state["run_simulation"]:
             minimumAllowedLevel=minimumAllowedLevel,
             percentage_geomecLimits_shallow=safetyPercentage_geomecLimits_shallow,
             percentage_geomecLimits_deeper=safetyPercentage_geomecLimits_deeper,
-            squaredArea=squaredArea,
+            squaredArea=st.session_state["numberWells_input"]*st.session_state["wellSpacing_input"]**2*1e6, ##from km to m**2
         )
     
+    
+        geomecStress_shallow = st.session_state["stress_input"]*1e5
+        geomecStress_deep = st.session_state["stress_input"]*1e5/0.154*0.139
+
+        area = st.session_state["numberWells_input"]*st.session_state["wellSpacing_input"]**2
         if (BaseCase < m_i[-1]):
-            st.write(f"Capacity: {BaseCase/1e9:.2f} Million tons (constrained by geomechanics)")
+            st.write(f"Capacity: {BaseCase/1e9:.2f} Million tons (constrained by geomechanics), over an area of {area:.0f} km²")
         else: 
-            st.write(f"Capacity under restrictions: {BaseCase/1e9:.2f} Million tons (no limit reached)")
+            st.write(f"Capacity under restrictions: {BaseCase/1e9:.2f} Million tons (no limit reached), over an area of {area:.0f} km²")
         video_file = generate_simulation_animation(
             CO2_equivalentRadius, CO2_plumeHeight, H_spread_pressure, V_spread_pressure,
-            pressure_on_bottom_last_formation_barrier, geomecGradient_shallow,
+            pressure_on_bottom_last_formation_barrier, geomecStress_shallow,geomecStress_deep,
             percentage_geomecLimits_shallow, overpressure_coreArea_percent,
             percentage_geomecLimits_deeper, t, dotm_i, m_i,BaseCase
         )
     
-    ################ainda com um problema no limite geomecanico do intervalo raso. na figura ele pinta de vermelho corretamente, mas no calculo do volume maximo esta com problema.....
     
         st.video(f"{video_file}")
      
