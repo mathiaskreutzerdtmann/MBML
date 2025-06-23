@@ -150,11 +150,14 @@ def generate_simulation_animation(CO2_equivalentRadius,CO2_plumeHeight,H_spread_
         ax2.set_ylim([0, max(dotm_i*year_in_seconds/1e9)*1.1])
         ax2.set_xlabel("Time [y]")
         ax2.set_ylabel("Injection rate")
+        ax2.yaxis.set_label_position("left")
         ax2.legend(loc='upper left')
         ax2.grid(True)
         
         # Second y-axis: another variable
         ax3.plot(t[:i+1]/year_in_seconds, m_i[:i+1]/1e9, color='tab:blue', label='Injected mass [million tons]')
+        ax3.yaxis.set_label_position("right")
+
         # Find the first index where m_i >= C
         threshold_index = next((j for j, val in enumerate(m_i[:i+1]) if val >= capacity_constrained), None)
         
@@ -500,8 +503,7 @@ def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh
 
     presInj = (1 + overpressure_coreArea_percent) * (injection_base * Pressure_gradient)
     presInjLimit  = (geomecGradient_deeper * percentage_geomecLimits_deeper) * injection_base
-    print(geomecGradient_deeper)
-
+    
     effectiveSafetyMargin_coreArea = presInjLimit - presInj
     
     if(effectiveSafetyMargin_coreArea[-1]>0):
