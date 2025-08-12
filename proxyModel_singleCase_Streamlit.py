@@ -103,15 +103,15 @@ def draw_analitic(seaLevel,lastBarrierDepth,injectionBase,plumeSize_h,plumeSize_
     if(presSeal>sealLimit+100e5):
         ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, "Pressure just below seal way beyond geomec. limit", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))    
     elif(presSeal>sealLimit):
-        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, f"Pressure just below seal [geomec. limit] in bars: {presSeal/1e5:.1f} [{sealLimit/1e5:.1f}]", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
+        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, f"Pressure just below seal [geomec. limit] in bar: {presSeal/1e5:.1f} [{sealLimit/1e5:.1f}]", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
     else:
-        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, f"Pressure just below seal [geomec. limit] in bars: {presSeal/1e5:.1f} [{sealLimit/1e5:.1f}]", fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
+        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, f"Pressure just below seal [geomec. limit] in bar: {presSeal/1e5:.1f} [{sealLimit/1e5:.1f}]", fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
     if(presInj>injLimit+100e5):
         ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, "Pressure on injection region way beyond geomec. limit", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
     elif(presInj>injLimit):
-        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, f"Pressure on injection region [geomec. limit] in bars: {presInj/1e5:.1f} [{injLimit/1e5:.1f}]", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
+        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, f"Pressure on injection region [geomec. limit] in bar: {presInj/1e5:.1f} [{injLimit/1e5:.1f}]", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
     else:
-        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, f"Pressure on injection region [geomec. limit] in bars: {presInj/1e5:.1f} [{injLimit/1e5:.1f}]", fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
+        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, f"Pressure on injection region [geomec. limit] in bar: {presInj/1e5:.1f} [{injLimit/1e5:.1f}]", fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
 
     # Set limits and remove axes
     ax.set_xlim(0, 1)
@@ -700,3 +700,4 @@ if st.session_state["run_simulation"]:
         st.video(f"{video_file}")
      
         st.session_state["running"] = False
+
