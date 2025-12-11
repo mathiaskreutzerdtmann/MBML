@@ -623,7 +623,7 @@ st.slider("Natural uncertainty parameter: Minimum Stress Gradient on shallow for
 st.slider("Design parameter: topside injection pressure (bar)", 10, 200, 75, key="valuePwf_input")
 st.slider("Design parameter: Maximum rate on cluster (Million t/year)", 3, 50, 20, key="valueMaxRate_input")
 st.slider("Design parameter: Number of wells", 2, 24, 12, key="numberWells_input")
-st.slider("Design parameter: Area of injection (km^2)", 10.0, 500.0, 100.0, key="wellSpacing_input",step=10)
+st.slider("Design parameter: Area of injection (km^2)", 10, 500, 100, key="wellSpacing_input",step=10)
 
 # Button to trigger simulation
 clicked = st.button("▶ Run Simulation", disabled=st.session_state["running"])
@@ -700,5 +700,6 @@ if st.session_state["run_simulation"]:
         st.video(f"{video_file}")
      
         st.session_state["running"] = False
+
 
 
