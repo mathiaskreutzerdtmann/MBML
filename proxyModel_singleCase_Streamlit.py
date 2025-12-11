@@ -684,7 +684,7 @@ if st.session_state["run_simulation"]:
         geomecStress_shallow = st.session_state["stress_input"]*1e5
         geomecStress_deep = st.session_state["stress_input"]*1e5/0.154*0.139
 
-        area = st.session_state["numberWells_input"]*st.session_state["wellSpacing_input"]**2
+        area = st.session_state["wellSpacing_input"]
         if (BaseCase < m_i[-1]):
             st.write(f"Capacity: {BaseCase/1e9:.2f} Million tons (constrained by geomechanics), over an area of {area:.0f} km²")
         else: 
@@ -700,6 +700,7 @@ if st.session_state["run_simulation"]:
         st.video(f"{video_file}")
      
         st.session_state["running"] = False
+
 
 
 
