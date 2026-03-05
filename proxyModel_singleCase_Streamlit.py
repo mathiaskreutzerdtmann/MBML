@@ -617,16 +617,16 @@ if "running" not in st.session_state:
 
 
 # Sliders with keys
-st.slider("Natural uncertainty parameter: Heterogeneity (LCC)", 0.2, 1.0, 0.7, key="valueLCC_input")
-st.slider("Natural uncertainty parameter: Permeability (mD)", 1, 200, 27, key="valuek_input")
-st.slider("Natural uncertainty parameter: Minimum Stress Gradient on shallow formation (bar/m)", 0.13, 0.17, 0.15, key="stress_input")
-st.slider("Design parameter: topside injection pressure (bar)", 10, 200, 75, key="valuePwf_input")
-st.slider("Design parameter: Maximum rate on cluster (Million t/year)", 3, 50, 20, key="valueMaxRate_input")
-st.slider("Design parameter: Number of wells", 2, 24, 12, key="numberWells_input")
-st.slider("Design parameter: Area of injection (km^2)", 10, 500, 100, key="wellSpacing_input",step=10)
+st.slider("Parâmetro de incerteza: Heterogeneidade (LC)", 0.2, 1.0, 0.7, key="valueLCC_input")
+st.slider("Parâmetro de incerteza: Permeabilidade (mD)", 1, 200, 27, key="valuek_input")
+st.slider("Parâmetro de incerteza: Gradiente de tensão mínima (bar/m)", 0.13, 0.17, 0.15, key="stress_input")
+st.slider("Parâmetro de projeto: Pressão de injeção no topside (bar)", 10, 200, 75, key="valuePwf_input")
+st.slider("Parâmetro de projeto: Vazão máxima de injeção do conjunto de poços (Milhões de tons/ano)", 3, 50, 20, key="valueMaxRate_input")
+st.slider("Parâmetro de projeto: Número de poços", 2, 24, 12, key="numberWells_input")
+st.slider("Parâmetro de projeto: Área de injeção (km^2)", 10, 500, 100, key="wellSpacing_input",step=10)
 
 # Button to trigger simulation
-clicked = st.button("▶ Run Simulation", disabled=st.session_state["running"])
+clicked = st.button("▶ Simular!", disabled=st.session_state["running"])
 if clicked:
     st.session_state["run_simulation"] = True
     st.session_state["running"] = True
@@ -686,9 +686,9 @@ if st.session_state["run_simulation"]:
 
         area = st.session_state["wellSpacing_input"]
         if (BaseCase < m_i[-1]):
-            st.write(f"Capacity: {BaseCase/1e9:.2f} Million tons (constrained by geomechanics), over an area of {area:.0f} km²")
+            st.write(f"Capacidade: {BaseCase/1e9:.2f} Milhões de toneladas (restrito pela geomecânica), em uma área de {area:.0f} km²")
         else: 
-            st.write(f"Capacity under restrictions: {BaseCase/1e9:.2f} Million tons (no limit reached), over an area of {area:.0f} km²")
+            st.write(f"Capacidade: {BaseCase/1e9:.2f} Milhões de toneladas (nenhum limite geomecânico atingido no limite de tempo), em uma área de {area:.0f} km²")
         video_file = generate_simulation_animation(
             CO2_equivalentRadius, CO2_plumeHeight, H_spread_pressure, V_spread_pressure,
             pressure_on_bottom_last_formation_barrier, geomecStress_shallow,geomecStress_deep,
@@ -700,6 +700,7 @@ if st.session_state["run_simulation"]:
         st.video(f"{video_file}")
      
         st.session_state["running"] = False
+
 
 
 
