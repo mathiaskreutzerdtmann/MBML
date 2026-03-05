@@ -606,7 +606,7 @@ mu_x_in = [phi,np.log(k),kvkh_ratio,LCC,np.log(C_Land),Solubility,Pressure_gradi
 #def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh_ratio,LCC,C_Land,Solubility,Pressure_gradient,geomecGradient_shallow,geomecGradient_deeper,Pwf,well_count,injection_base,injection_interval,maximumRate,maximumAllowedPlumeReach,minimumAllowedLevel,percentage_geomecLimits_shallow,percentage_geomecLimits_deeper,squaredArea):
 
 # Streamlit
-st.title("CO2 plume and pressure front")
+st.title("Frente de pressão de CO2 - capacidade em aquífero heterogêneo com restrição geomecânica")
 # Initialize flags
 if "run_simulation" not in st.session_state:
     st.session_state["run_simulation"] = False
@@ -651,7 +651,7 @@ if current_inputs != st.session_state["prev_inputs"]:
 if st.session_state["run_simulation"]:
     time.sleep(.2)
 
-    with st.spinner("Generating animation, please wait..."):    
+    with st.spinner("Gerando animação, por favor espere..."):    
         CO2_equivalentRadius, CO2_plumeHeight, H_spread_pressure, V_spread_pressure, \
         pressure_on_bottom_last_formation_barrier, geomecGradient_shallow, \
         percentage_geomecLimits_shallow, overpressure_coreArea_percent, \
@@ -700,6 +700,7 @@ if st.session_state["run_simulation"]:
         st.video(f"{video_file}")
      
         st.session_state["running"] = False
+
 
 
 
