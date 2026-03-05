@@ -101,17 +101,17 @@ def draw_analitic(seaLevel,lastBarrierDepth,injectionBase,plumeSize_h,plumeSize_
     ax.add_patch(ellipse2)
     
     if(presSeal>sealLimit+100e5):
-        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, "Pressure just below seal way beyond geomec. limit", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))    
+        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, "Pressão abaixo do selo muito além do limite geomec.", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))    
     elif(presSeal>sealLimit):
-        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, f"Pressure just below seal [geomec. limit] in bar: {presSeal/1e5:.1f} [{sealLimit/1e5:.1f}]", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
+        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, f"Pressão abaixo do selo em bar [e limite geomec.]: {presSeal/1e5:.1f} [{sealLimit/1e5:.1f}]", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
     else:
-        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, f"Pressure just below seal [geomec. limit] in bar: {presSeal/1e5:.1f} [{sealLimit/1e5:.1f}]", fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
+        ax.text(0.01, 1.0-0.9*lastBarrierDepth*scale*verticalExagg-seaLevel*scale*verticalExagg, f"Pressão abaixo do selo em bar [e limite geomec.]: {presSeal/1e5:.1f} [{sealLimit/1e5:.1f}]", fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
     if(presInj>injLimit+100e5):
-        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, "Pressure on injection region way beyond geomec. limit", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
+        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, "Pressão na região de injeção muito além do limite geomec.", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
     elif(presInj>injLimit):
-        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, f"Pressure on injection region [geomec. limit] in bar: {presInj/1e5:.1f} [{injLimit/1e5:.1f}]", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
+        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, f"Pressão na região da injeção em bar [e limite geomec.]: {presInj/1e5:.1f} [{injLimit/1e5:.1f}]", fontsize=12, color='red', bbox=dict(facecolor='white', alpha=0.5))
     else:
-        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, f"Pressure on injection region [geomec. limit] in bar: {presInj/1e5:.1f} [{injLimit/1e5:.1f}]", fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
+        ax.text(0.01, 1.0-1.3*injectionBase*scale*verticalExagg-plumeSize_v*scale*verticalExagg, f"Pressão na região da injeção em bar [e limite geomec.]: {presInj/1e5:.1f} [{injLimit/1e5:.1f}]", fontsize=12, color='black', bbox=dict(facecolor='white', alpha=0.5))
 
     # Set limits and remove axes
     ax.set_xlim(0, 1)
@@ -606,7 +606,7 @@ mu_x_in = [phi,np.log(k),kvkh_ratio,LCC,np.log(C_Land),Solubility,Pressure_gradi
 #def proxy_model_CCS(Datum,bottom_last_formation_barrier,SeaWaterLevel,phi,k,kvkh_ratio,LCC,C_Land,Solubility,Pressure_gradient,geomecGradient_shallow,geomecGradient_deeper,Pwf,well_count,injection_base,injection_interval,maximumRate,maximumAllowedPlumeReach,minimumAllowedLevel,percentage_geomecLimits_shallow,percentage_geomecLimits_deeper,squaredArea):
 
 # Streamlit
-st.title("Frente de pressão de CO2 - capacidade em aquífero heterogêneo com restrição geomecânica")
+st.title("Capacidade em aquífero heterogêneo com restrição geomecânica")
 # Initialize flags
 if "run_simulation" not in st.session_state:
     st.session_state["run_simulation"] = False
@@ -700,6 +700,7 @@ if st.session_state["run_simulation"]:
         st.video(f"{video_file}")
      
         st.session_state["running"] = False
+
 
 
 
